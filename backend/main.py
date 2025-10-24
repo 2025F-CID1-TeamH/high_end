@@ -6,9 +6,13 @@ import logging
 from collections import deque
 from datetime import datetime
 import base64
+import os
+from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+load_dotenv()
 
 app = FastAPI()
 
@@ -30,9 +34,13 @@ stats = {
 }
 current_tracks = {}  # track_id별 현재 상태
 
-# MQTT 설정
-TOPST_IP = "localhost"  # TODO: TOPST IP 입력하기
-MQTT_PORT = 1883
+TOPST_IP = os.getenv('TOPST_IP', 'localhost')
+MQTT_PORT = int(os.getenv('MQTT_PORT', 1883))
+SERVER_HOST = os.getenv('SERVER_HOST', '0.0.0.0')
+SERVER_PORT = int(os.getenv('SERVER_PORT', 8000))
+
+logger.info(f"설정: TOPST_IP={TOPST_IP}, MQTT_PORT={MQTT_PORT}")
+
 
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
@@ -197,4 +205,4 @@ async def get_person_image(track_id: int):
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host=SERVER_HOST, port=SERVER_PORT)
