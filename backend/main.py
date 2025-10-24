@@ -36,6 +36,7 @@ current_tracks = {}  # track_id별 현재 상태
 
 TOPST_IP = os.getenv('TOPST_IP', 'localhost')
 MQTT_PORT = int(os.getenv('MQTT_PORT', 1883))
+MQTT_TOPIC = os.getenv('MQTT_TOPIC', 'highend/#')
 SERVER_HOST = os.getenv('SERVER_HOST', '0.0.0.0')
 SERVER_PORT = int(os.getenv('SERVER_PORT', 8000))
 
@@ -45,7 +46,7 @@ logger.info(f"설정: TOPST_IP={TOPST_IP}, MQTT_PORT={MQTT_PORT}")
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         logger.info("success: TOPST connected")
-        client.subscribe("highend/#")
+        client.subscribe(MQTT_TOPIC)
     else:
         logger.error(f"failed conection: {rc}")
 
@@ -70,7 +71,7 @@ def on_message(client, userdata, msg):
         if event_type == "enter":
             handle_enter(device, track_id, payload, timestamp, seq)
         elif event_type == "exit":
-            handle_exit(device, track_id, timestamp, seq)
+            handle_exit(device, track_id, payload, timestamp, seq)
         else:
             logger.warning(f"알 수 없는 타입: {event_type}")
             
