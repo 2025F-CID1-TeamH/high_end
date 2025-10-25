@@ -78,7 +78,7 @@ function App() {
                     <div className="stat-card">
                         <div className="stat-icon">👥</div>
                         <div className="stat-content">
-                            <h3>현재 내부 인원</h3>
+                            <h3>현재 방문 인원</h3>
                             <p className="stat-number highlight">{stats?.current_people || 0}명</p>
                         </div>
                     </div>
@@ -174,7 +174,7 @@ function App() {
                                         </div>
 
                                         {/* 입장 이벤트면 이미지 표시 */}
-                                        {event.type === 'enter' && event.image && (
+                                        {event.image && (
                                             <div className="event-image">
                                                 <img
                                                     src={`data:image/${event.image.format || 'jpeg'};base64,${event.image.data_b64}`}
