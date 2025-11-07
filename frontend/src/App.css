@@ -43,7 +43,7 @@ body {
 }
 
 /* 통계 그리드 */
-.stats-grid {
+.stats-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
@@ -361,7 +361,7 @@ body {
     font-size: 1.8em;
   }
 
-  .stats-grid {
+  .stats-section {
     grid-template-columns: 1fr;
   }
 
