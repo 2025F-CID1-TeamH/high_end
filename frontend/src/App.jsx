@@ -9,6 +9,8 @@ function App() {
     const [status, setStatus] = useState(null);
     const [stats, setStats] = useState(null);
     const [tracks, setTracks] = useState(null);
+    const [cameraConnected, setCameraConnected] = useState(false);
+
 
     // 데이터 로드
     const loadData = async () => {
@@ -24,6 +26,9 @@ function App() {
             setStatus(statusRes.data);
             setStats(statsRes.data);
             setTracks(tracksRes.data);
+
+            // 카메라 연결 상태 업데이트
+            setCameraConnected(statusRes.data.camera_connected || false);
         } catch (error) {
             console.error('데이터 로드 실패:', error);
         }
@@ -63,6 +68,32 @@ function App() {
             </header>
 
             <div className="container">
+
+                {/* ===== 카메라 스트림 섹션 ===== */}
+                <div className="camera-section">
+                    <div className="camera-header">
+                        <h2>📹 실시간 카메라</h2>
+                        <div className={`camera-status ${cameraConnected ? 'connected' : 'disconnected'}`}>
+                            {cameraConnected ? '🟢 연결됨' : '🔴 연결 끊김'}
+                        </div>
+                    </div>
+
+                    <div className="camera-stream-container">
+                        <img
+                            src={`${API_URL}/api/camera/stream`}
+                            alt="Live Camera Stream"
+                            className="camera-stream"
+                        />
+                    </div>
+
+                    <div className="camera-info">
+                        {cameraConnected
+                            ? '✅ 카메라로부터 실시간 영상 수신 중'
+                            : '⏳ 카메라 연결 대기 중...'}
+                    </div>
+                </div>
+                {/* ===== 카메라 섹션 끝 ===== */}
+
                 {/* 상태 카드 */}
                 <div className="stats-grid">
                     <div className="stat-card">

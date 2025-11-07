@@ -8,6 +8,9 @@ from datetime import datetime
 import base64
 import os
 from dotenv import load_dotenv
+import asyncio
+import cv2
+import numpy as np
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -33,6 +36,12 @@ stats = {
     "current_people": 0  # 내부 인원
 }
 current_tracks = {}  # track_id별 현재 상태
+
+# ===== 카메라 스트리밍 추가 ===== 
+latest_frame = None  # 최신 프레임 저장
+latest_frame_timestamp = None
+frame_lock = asyncio.Lock()
+# ================================
 
 TOPST_IP = os.getenv('TOPST_IP', 'localhost')
 MQTT_PORT = int(os.getenv('MQTT_PORT', 1883))
@@ -67,16 +76,36 @@ def on_message(client, userdata, msg):
         # 타임스탬프 변환 (ms → ISO format)
         timestamp = datetime.fromtimestamp(ts / 1000).isoformat() if ts else datetime.now().isoformat()
         
+        # ===== 카메라 프레임 업데이트 ===== 
+        image_data = payload.get("image", {})
+        if image_data.get("data_b64"):
+            update_latest_frame(image_data.get("data_b64"))
+        # ==================================
+
         # 이벤트 처리
         if event_type == "enter":
             handle_enter(device, track_id, payload, timestamp, seq)
         elif event_type == "exit":
             handle_exit(device, track_id, payload, timestamp, seq)
+        elif event_type == "stream":  # 트림 전용 처리
+            # 프레임만 업데이트 (이벤트 저장 안 함)
+            logger.debug(f"스트림 프레임 수신 (seq={seq})")
+            pass
         else:
             logger.warning(f"알 수 없는 타입: {event_type}")
             
     except Exception as e:
         logger.error(f"처리 오류: {e}")
+
+def update_latest_frame(image_b64: str):
+    """최신 프레임 업데이트"""
+    global latest_frame, latest_frame_timestamp
+    try:
+        img_bytes = base64.b64decode(image_b64)
+        latest_frame = img_bytes
+        latest_frame_timestamp = datetime.now()
+    except Exception as e:
+        logger.error(f"프레임 업데이트 오류: {e}")
 
 def handle_enter(device, track_id, payload, timestamp, seq):
     """입장 이벤트 처리"""
@@ -203,6 +232,94 @@ async def get_person_image(track_id: int):
                 "timestamp": event.get("timestamp")
             }
     return {"error": "Image not found"}
+
+# ===== 카메라 스트리밍 API ===== 
+
+@app.get("/api/camera/status")
+async def camera_status():
+    """카메라 연결 상태"""
+    global latest_frame_timestamp
+    
+    # 10초 이내 프레임 수신했으면 연결됨
+    connected = False
+    if latest_frame_timestamp:
+        time_diff = (datetime.now() - latest_frame_timestamp).total_seconds()
+        connected = time_diff < 10
+    
+    return {
+        "connected": connected,
+        "last_update": latest_frame_timestamp.isoformat() if latest_frame_timestamp else None
+    }
+
+def generate_mjpeg_stream():
+    """MJPEG 스트림 생성"""
+    global latest_frame
+    
+    while True:
+        if latest_frame is not None:
+            # JPEG 프레임 전송
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + latest_frame + b'\r\n')
+        else:
+            # 프레임 없으면 검은 화면
+            blank = np.zeros((480, 640, 3), dtype=np.uint8)
+            
+            # "Waiting for camera..." 텍스트 추가
+            cv2.putText(blank, "Waiting for camera...", (150, 240),
+                       cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            
+            _, buffer = cv2.imencode('.jpg', blank)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+        
+        # 약 10 FPS (부드럽고 대역폭 절약)
+        import time
+        time.sleep(0.1)
+
+def generate_mjpeg_stream():
+    """MJPEG 스트림 생성"""
+    global latest_frame
+    
+    while True:
+        if latest_frame is not None:
+            # JPEG 프레임 전송
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + latest_frame + b'\r\n')
+        else:
+            # 프레임 없으면 검은 화면
+            blank = np.zeros((480, 640, 3), dtype=np.uint8)
+            cv2.putText(blank, "Waiting for camera...", (150, 240),
+                       cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+            _, buffer = cv2.imencode('.jpg', blank)
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + buffer.tobytes() + b'\r\n')
+        
+        # 약 10 FPS
+        import time
+        time.sleep(0.1)
+
+@app.get("/api/camera/stream")
+async def camera_stream():
+    """실시간 카메라 스트림 (MJPEG)"""
+    return StreamingResponse(
+        generate_mjpeg_stream(),
+        media_type="multipart/x-mixed-replace; boundary=frame"
+    )
+
+@app.get("/api/camera/snapshot")
+async def camera_snapshot():
+    """현재 프레임 스냅샷"""
+    global latest_frame
+    
+    if latest_frame is None:
+        return {"error": "No frame available"}
+    
+    return {
+        "timestamp": latest_frame_timestamp.isoformat() if latest_frame_timestamp else None,
+        "image": base64.b64encode(latest_frame).decode('utf-8')
+    }
+
+# ===================================
 
 if __name__ == "__main__":
     import uvicorn

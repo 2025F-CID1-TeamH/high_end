@@ -383,4 +383,77 @@ body {
     flex-direction: column;
     gap: 5px;
   }
+
+  /* ===== 카메라 섹션 ===== */
+  .camera-section {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .camera-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+
+  .camera-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+  }
+
+  .camera-status {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+
+  .camera-status.connected {
+    background-color: #4caf50;
+    color: white;
+  }
+
+  .camera-status.disconnected {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .camera-stream-container {
+    position: relative;
+    width: 100%;
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .camera-stream {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .camera-info {
+    margin-top: 10px;
+    text-align: center;
+    font-size: 14px;
+    color: #666;
+  }
+
+  /* 반응형 */
+  @media (max-width: 768px) {
+    .camera-stream-container {
+      min-height: 240px;
+    }
+  }
+
+
 }
