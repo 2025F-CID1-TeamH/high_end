@@ -2,6 +2,28 @@
 
 **react (fe) + python, fastapi (be)**
 
+1. docker 실행되는지 확인
+2. docker 명령어로 환경 설치, 실행 가능
+```
+# 빌드 & 실행
+docker-compose up --build
+
+# 백그라운드 실행
+docker-compose up -d
+
+# 중지
+docker-compose down
+
+# 로그 확인
+docker-compose logs -f
+
+# 특정 서비스만 재시작
+docker-compose restart backend
+docker-compose restart frontend
+```
+<details>
+<summary> 구버전 </summary>
+
 ### 1. 필수 패키지 설치
 ```
 sudo apt update
@@ -27,3 +49,4 @@ npm start
 // 현재 폴더: backend
 python3 ../backend/main.py
 ```
+</details>
