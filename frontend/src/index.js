@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { MqttProvider } from './mqtt/MqttContext';
+import { MqttStateProvider } from './mqtt/MqttStateContext';
 
 const mqtt_host = process.env.REACT_APP_MQTT_HOST || 'localhost';
 const mqtt_port = process.env.REACT_APP_MQTT_PORT || '9001';
@@ -14,7 +15,9 @@ root.render(
     <MqttProvider
       url={`ws://${mqtt_host}:${mqtt_port}`}
     >
-      <App />
+      <MqttStateProvider>
+        <App />
+      </MqttStateProvider>
     </MqttProvider>
   </React.StrictMode>
 );

@@ -9,7 +9,7 @@ import mqtt from "mqtt";
 
 const MqttContext = createContext(null);
 
-const MAX_MESSAGES = 1000;
+// const MAX_MESSAGES = 1000;
 
 export function MqttProvider({ url, options, children }) {
   const [client, setClient] = useState(null);
@@ -52,7 +52,7 @@ export function MqttProvider({ url, options, children }) {
 
       setMessages(prev => {
         const next = [...prev, msg];
-        return next.length > MAX_MESSAGES ? next.slice(next.length - MAX_MESSAGES) : next;
+        return next; // return next.length > MAX_MESSAGES ? next.slice(next.length - MAX_MESSAGES) : next;
       });
     };
 
