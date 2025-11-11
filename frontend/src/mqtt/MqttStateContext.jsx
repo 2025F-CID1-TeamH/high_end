@@ -6,14 +6,17 @@ import React, {
   useRef,
 } from "react";
 import { useMqttContext } from "./MqttContext";
+import { initialStat, statReducer } from "./states/MqttStat";
 
 const MqttStateContext = createContext(null);
 
 const initialState = {
+  stat: initialStat
 };
 
 function stateReducer(state, msg) {
   return {
+    stat: statReducer(state.stat, msg)
   };
 }
 

@@ -10,29 +10,24 @@ const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 function App() {
     const [events, setEvents] = useState([]);
-    const [status, setStatus] = useState(null);
-    const [stats, setStats] = useState(null);
     const [tracks, setTracks] = useState(null);
-    const [cameraConnected, setCameraConnected] = useState(false);
+    // const [cameraConnected, setCameraConnected] = useState(false);
+    const cameraConnected = false;
 
 
     // 데이터 로드
     const loadData = async () => {
         try {
-            const [eventsRes, statusRes, statsRes, tracksRes] = await Promise.all([
+            const [eventsRes, tracksRes] = await Promise.all([
                 axios.get(`${API_URL}/api/events`),
-                axios.get(`${API_URL}/api/status`),
-                axios.get(`${API_URL}/api/stats`),
                 axios.get(`${API_URL}/api/tracks`)
             ]);
 
             setEvents(eventsRes.data);
-            setStatus(statusRes.data);
-            setStats(statsRes.data);
             setTracks(tracksRes.data);
 
             // 카메라 연결 상태 업데이트
-            setCameraConnected(statusRes.data.camera_connected || false);
+            // setCameraConnected(statusRes.data.camera_connected || false);
         } catch (error) {
             console.error('데이터 로드 실패:', error);
         }
@@ -54,7 +49,7 @@ function App() {
 
             <div className="container">
                 <CameraSection API_URL={API_URL} cameraConnected={cameraConnected} />
-                <StatsSection status={status} stats={stats} />
+                <StatsSection />
                 <TracksSection tracks={tracks} />
                 <EventsSection events={events} onRefresh={loadData} />
             </div>

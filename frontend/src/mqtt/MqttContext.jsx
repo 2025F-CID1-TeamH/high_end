@@ -25,7 +25,10 @@ export function MqttProvider({ url, options, children }) {
 
     setClient(c);
 
-    const onConnect = () => setIsConnected(true);
+    const onConnect = () => {
+      setIsConnected(true);
+      c.subscribe("topst/#"); // TODO: 구독할 토픽 정하기
+    }
     const onClose = () => setIsConnected(false);
     const onError = (err) => console.error("[MQTT] error:", err);
 
