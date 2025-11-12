@@ -1,7 +1,10 @@
 import React from 'react';
 import Track from './tracks_section/Track';
+import { useTracks } from '../mqtt/hooks/useTracks';
 
-export default function TracksSection({ tracks }) {
+export default function TracksSection() {
+    const tracks = useTracks();
+
     if (!tracks || tracks.count === 0) return null;
 
     return (

@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
 import './App.css';
 import CameraSection from './components/CameraSection';
 import StatsSection from './components/StatsSection';
@@ -9,31 +8,7 @@ import EventsSection from './components/EventsSection';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 function App() {
-    const [tracks, setTracks] = useState(null);
-    // const [cameraConnected, setCameraConnected] = useState(false);
     const cameraConnected = false;
-
-
-    // 데이터 로드
-    const loadData = async () => {
-        try {
-            const tracksRes = await axios.get(`${API_URL}/api/tracks`);
-
-            setTracks(tracksRes.data);
-
-            // 카메라 연결 상태 업데이트
-            // setCameraConnected(statusRes.data.camera_connected || false);
-        } catch (error) {
-            console.error('데이터 로드 실패:', error);
-        }
-    };
-
-    // 3초마다 자동 새로고침
-    useEffect(() => {
-        loadData();
-        const interval = setInterval(loadData, 3000);
-        return () => clearInterval(interval);
-    }, []);
 
     return (
         <div className="App">
@@ -45,7 +20,7 @@ function App() {
             <div className="container">
                 <CameraSection API_URL={API_URL} cameraConnected={cameraConnected} />
                 <StatsSection />
-                <TracksSection tracks={tracks} />
+                <TracksSection />
                 <EventsSection />
             </div>
         </div>

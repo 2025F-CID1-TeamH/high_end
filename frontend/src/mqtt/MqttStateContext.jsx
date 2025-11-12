@@ -8,18 +8,21 @@ import React, {
 import { useMqttContext } from "./MqttContext";
 import { initialStat, statReducer } from "./states/MqttStat";
 import { eventsReducer, initialEvents } from "./states/MqttEvents";
+import { initialTracks, tracksReducer } from "./states/MqttTracks";
 
 const MqttStateContext = createContext(null);
 
 const initialState = {
   events: initialEvents,
-  stat: initialStat
+  stat: initialStat,
+  tracks: initialTracks
 };
 
 function stateReducer(state, msg) {
   return {
     events: eventsReducer(state.events, msg),
-    stat: statReducer(state.stat, msg)
+    stat: statReducer(state.stat, msg),
+    tracks: tracksReducer(state.tracks, msg)
   };
 }
 
