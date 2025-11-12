@@ -1,6 +1,9 @@
 import React from 'react';
 
-export default function CameraSection({ API_URL, cameraConnected }) {
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+const cameraConnected = false;
+
+export default function CameraSection() {
     return (
         <div className="camera-section">
             <div className="camera-header">

@@ -5,11 +5,7 @@ import StatsSection from './components/StatsSection';
 import TracksSection from './components/TracksSection';
 import EventsSection from './components/EventsSection';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-
 function App() {
-    const cameraConnected = false;
-
     return (
         <div className="App">
             <header className="header">
@@ -18,7 +14,7 @@ function App() {
             </header>
 
             <div className="container">
-                <CameraSection API_URL={API_URL} cameraConnected={cameraConnected} />
+                <CameraSection />
                 <StatsSection />
                 <TracksSection />
                 <EventsSection />
