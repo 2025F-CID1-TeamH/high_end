@@ -15,10 +15,12 @@ function App() {
             </header>
 
             <div className="container">
-                <CameraSection />
                 <StatsSection />
                 <TracksSection />
-                <EventsSection />
+                <div className="events-camera-layout">
+                    <EventsSection />
+                    <CameraSection />
+                </div>
             </div>
         </div>
     );
