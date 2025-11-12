@@ -9,7 +9,6 @@ import EventsSection from './components/EventsSection';
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 function App() {
-    const [events, setEvents] = useState([]);
     const [tracks, setTracks] = useState(null);
     // const [cameraConnected, setCameraConnected] = useState(false);
     const cameraConnected = false;
@@ -18,12 +17,8 @@ function App() {
     // 데이터 로드
     const loadData = async () => {
         try {
-            const [eventsRes, tracksRes] = await Promise.all([
-                axios.get(`${API_URL}/api/events`),
-                axios.get(`${API_URL}/api/tracks`)
-            ]);
+            const tracksRes = await axios.get(`${API_URL}/api/tracks`);
 
-            setEvents(eventsRes.data);
             setTracks(tracksRes.data);
 
             // 카메라 연결 상태 업데이트
@@ -51,7 +46,7 @@ function App() {
                 <CameraSection API_URL={API_URL} cameraConnected={cameraConnected} />
                 <StatsSection />
                 <TracksSection tracks={tracks} />
-                <EventsSection events={events} onRefresh={loadData} />
+                <EventsSection />
             </div>
         </div>
     );

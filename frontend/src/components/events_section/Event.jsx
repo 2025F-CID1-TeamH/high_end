@@ -12,8 +12,8 @@ export default function Event({ event }) {
         }
     };
 
-    const getSeverityColor = (severity) => {
-        switch (severity) {
+    const getPriorityColor = (priority) => {
+        switch (priority) {
             case 'high':
                 return '#e74c3c';
             case 'medium':
@@ -28,18 +28,18 @@ export default function Event({ event }) {
     return (
         <div
             className={`event-card ${event.type}`}
-            style={{ borderLeftColor: getSeverityColor(event.severity) }}
+            style={{ borderLeftColor: getPriorityColor(event.priority) }}
         >
             <div className="event-header">
                 <span className="event-type">{getEventIcon(event.type)}</span>
                 <span
-                    className="event-severity"
+                    className="event-priority"
                     style={{
-                        backgroundColor: getSeverityColor(event.severity) + '20',
-                        color: getSeverityColor(event.severity),
+                        backgroundColor: getPriorityColor(event.priority) + '20',
+                        color: getPriorityColor(event.priority),
                     }}
                 >
-                    {event.severity?.toUpperCase() || 'UNKNOWN'}
+                    {`PRIORITY: ${event.priority?.toUpperCase() || 'UNKNOWN'}`}
                 </span>
             </div>
 
