@@ -30,7 +30,7 @@ export function eventsReducer(state, msg) {
     }
 
     const newCount = Math.min(state.count + 1, MAX_EVENTS);
-    const newEvents = state.events;
+    const newEvents = new Deque(state.events.toArray());
 
     newEvents.unshift(event); // push_left
     if (state.count === MAX_EVENTS) {
