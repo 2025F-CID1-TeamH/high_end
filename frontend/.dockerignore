@@ -1,6 +1,0 @@
-node_modules/
-build/
-.git/
-.gitignore
-*.log
-npm-debug.log*
