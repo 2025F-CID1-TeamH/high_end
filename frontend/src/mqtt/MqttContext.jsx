@@ -9,6 +9,7 @@ import mqtt from "mqtt";
 
 const MqttContext = createContext(null);
 
+const MQTT_SUB_TOPIC = "topst/topst/#"
 // const MAX_MESSAGES = 1000;
 
 export function MqttProvider({ url, options, children }) {
@@ -27,7 +28,7 @@ export function MqttProvider({ url, options, children }) {
 
     const onConnect = () => {
       setIsConnected(true);
-      c.subscribe("topst/#"); // TODO: 구독할 토픽 정하기
+      c.subscribe(MQTT_SUB_TOPIC);
     }
     const onClose = () => setIsConnected(false);
     const onError = (err) => console.error("[MQTT] error:", err);
