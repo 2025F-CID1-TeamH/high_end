@@ -1,4 +1,6 @@
 import React from 'react';
+import '../styles/StatsSection.css';
+
 import { useStat } from '../mqtt/hooks/useStat';
 import { useMqttContext } from '../mqtt/MqttContext';
 

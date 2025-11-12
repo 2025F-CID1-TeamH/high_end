@@ -1,4 +1,6 @@
 import React from 'react';
+import '../styles/TracksSection.css';
+
 import Track from './tracks_section/Track';
 import { useTracks } from '../mqtt/hooks/useTracks';
 

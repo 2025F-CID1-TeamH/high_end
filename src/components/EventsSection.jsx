@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/EventsSection.css';
 
 import Event from './events_section/Event';
 import { useEvents } from '../mqtt/hooks/useEvents';

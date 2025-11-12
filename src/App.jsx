@@ -1,5 +1,6 @@
 import React from 'react';
-import './App.css';
+import './styles/App.css';
+
 import CameraSection from './components/CameraSection';
 import StatsSection from './components/StatsSection';
 import TracksSection from './components/TracksSection';

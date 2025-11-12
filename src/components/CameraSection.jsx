@@ -1,4 +1,5 @@
 import React from 'react';
+import '../styles/CameraSection.css';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 const cameraConnected = false;
