@@ -9,20 +9,23 @@ import { useMqttContext } from "./MqttContext";
 import { initialStat, statReducer } from "./states/MqttStat";
 import { eventsReducer, initialEvents } from "./states/MqttEvents";
 import { initialTracks, tracksReducer } from "./states/MqttTracks";
+import { cameraFrameReducer, initialCameraFrame } from "./states/MqttCameraFrame";
 
 const MqttStateContext = createContext(null);
 
 const initialState = {
   events: initialEvents,
   stat: initialStat,
-  tracks: initialTracks
+  tracks: initialTracks,
+  cameraFrame: initialCameraFrame
 };
 
 function stateReducer(state, msg) {
   return {
     events: eventsReducer(state.events, msg),
     stat: statReducer(state.stat, msg),
-    tracks: tracksReducer(state.tracks, msg)
+    tracks: tracksReducer(state.tracks, msg),
+    cameraFrame: cameraFrameReducer(state.cameraFrame, msg)
   };
 }
 
