@@ -37,6 +37,51 @@
   color: white;
 }
 
+.camera-meta {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 12px;
+  color: #2c3e50;
+}
+
+.camera-meta .label {
+  font-weight: 600;
+  margin-right: 8px;
+  color: #34495e;
+}
+
+.camera-meta-item {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.camera-timestamp {
+  font-variant-numeric: tabular-nums;
+}
+
+.camera-delta {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.camera-delta.positive {
+  /* 미래(+): 초록 */
+  color: #2ecc71;
+}
+
+.camera-delta.negative {
+  /* 과거(-): 지연 -> 빨강 */
+  color: #e74c3c;
+}
+
+.camera-fps {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
 .camera-stream-container {
   position: relative;
   width: 100%;

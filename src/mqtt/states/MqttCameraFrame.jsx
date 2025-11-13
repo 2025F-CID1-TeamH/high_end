@@ -1,9 +1,12 @@
 export const initialCameraFrame = {
   "timestamp": 0,
-  "format": "jpg",
-  "width": 0,
-  "height": 0,
-  "frame": "" // base64
+  "receivedAt": 0,
+  "image": {
+    "format": "jpg",
+    "width": 0,
+    "height": 0,
+    "data_b64": "" // base64
+  }
 };
 
 export function cameraFrameReducer(state, msg) {
@@ -15,10 +18,13 @@ export function cameraFrameReducer(state, msg) {
 
     return {
       "timestamp": msg.json.ts,
-      "format": msg.json.payload.format,
-      "width": msg.json.payload.width,
-      "height": msg.json.payload.height,
-      "frame": msg.json.payload.data
+      "receivedAt": Date.now(),
+      "image": {
+        "format": msg.json.payload.format,
+        "width": msg.json.payload.width,
+        "height": msg.json.payload.height,
+        "data_b64": msg.json.payload.data
+      }
     }
   }
   else return state;
