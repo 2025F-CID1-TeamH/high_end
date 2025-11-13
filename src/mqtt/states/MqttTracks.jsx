@@ -5,7 +5,7 @@ export const initialTracks = {
 export function tracksReducer(state, msg) {
   if (msg.topic === "topst/topst/ai") {
     if (!msg.isJson) {
-      console.log("[MqttStat] Received non-JSON message on topic 'topst/topst/ai'");
+      console.error("[MqttTracks] Received non-JSON message on topic 'topst/topst/ai'");
       return state;
     }
 

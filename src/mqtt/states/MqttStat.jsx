@@ -8,7 +8,7 @@ export const initialStat = {
 export function statReducer(state, msg) {
   if (msg.topic === "topst/topst/ai") {
     if (!msg.isJson) {
-      console.log("[MqttStat] Received non-JSON message on topic 'topst/topst/ai'");
+      console.error("[MqttStat] Received non-JSON message on topic 'topst/topst/ai'");
       return state;
     }
 

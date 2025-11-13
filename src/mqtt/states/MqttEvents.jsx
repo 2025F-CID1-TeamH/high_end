@@ -11,7 +11,7 @@ export const initialEvents = {
 export function eventsReducer(state, msg) {
   if (msg.topic === "topst/topst/ai") {
     if (!msg.isJson) {
-      console.log("[MqttEvents] Received non-JSON message on topic 'topst/topst/ai'");
+      console.error("[MqttEvents] Received non-JSON message on topic 'topst/topst/ai'");
       return state;
     }
 
