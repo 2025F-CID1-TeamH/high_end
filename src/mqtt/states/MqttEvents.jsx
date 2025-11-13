@@ -4,7 +4,14 @@ import Deque from "double-ended-queue";
 const MAX_EVENTS = 50;
 export const initialEvents = {
   "count": 0,
-  "events": new Deque()
+  "events": new Deque() /*{
+    "type": "enter" or "exit"
+    "device": sent device,
+    "track_id": 0,
+    "timestamp": 0,
+    "seq": 0,
+    "priority": "high" or "medium" or "low"
+  } */
 };
 
 

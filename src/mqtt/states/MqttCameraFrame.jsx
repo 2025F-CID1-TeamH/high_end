@@ -3,7 +3,7 @@ export const initialCameraFrame = {
   "format": "jpg",
   "width": 0,
   "height": 0,
-  "frame": ""
+  "frame": "" // base64
 };
 
 export function cameraFrameReducer(state, msg) {

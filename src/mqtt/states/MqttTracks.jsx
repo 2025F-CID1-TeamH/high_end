@@ -1,5 +1,8 @@
 export const initialTracks = {
-  "tracks": {}
+  "tracks": {} /* tracks[track_id] = {
+    "entered_at": timestamp,
+    "status": "inside"
+  } */
 };
 
 export function tracksReducer(state, msg) {
