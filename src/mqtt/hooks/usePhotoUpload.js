@@ -1,6 +1,9 @@
 import { useCallback, useRef } from 'react';
 import { useMqttContext } from '../MqttContext';
 
+const MAX_WIDTH = 640;
+const MAX_HEIGHT = 480;
+
 export function usePhotoUpload() {
   const { client, isConnected } = useMqttContext();
   const seqRef = useRef(0);
@@ -27,11 +30,29 @@ export function usePhotoUpload() {
         const img = new Image();
 
         img.onload = () => {
-          const width = img.width;
-          const height = img.height;
+          let width = img.width;
+          let height = img.height;
+          let currentDataUrl = dataUrl;
+
+          // Resize if larger than 640x480
+          if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+            const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            // Attempt to preserve original format
+            const mimeType = currentDataUrl.match(/^data:(image\/[a-zA-Z0-9+]+);base64,/)?.[1] || 'image/jpeg';
+            currentDataUrl = canvas.toDataURL(mimeType);
+          }
 
           // Extract format and base64 data
-          const matches = dataUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+          const matches = currentDataUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
 
           if (!matches) {
             reject(new Error("Invalid image format"));
