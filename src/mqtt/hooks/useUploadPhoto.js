@@ -4,19 +4,19 @@ import { useMqttContext } from '../MqttContext';
 const MAX_WIDTH = 640;
 const MAX_HEIGHT = 480;
 
-export function usePhotoUpload() {
+export function useUploadPhoto() {
   const { client, isConnected } = useMqttContext();
   const seqRef = useRef(0);
 
   const uploadPhoto = useCallback(async (file) => {
     if (!client || !isConnected) {
-      const err = new Error("[MqttPhotoUpload] MQTT client not connected");
+      const err = new Error("[MqttUploadPhoto] MQTT client not connected");
       console.error(err);
       throw err;
     }
 
     if (!file) {
-      const err = new Error("[MqttPhotoUpload] No file selected");
+      const err = new Error("[MqttUploadPhoto] No file selected");
       console.error(err);
       throw err;
     }

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { usePhotoUpload } from '../mqtt/hooks/usePhotoUpload';
-import '../styles/PhotoUploadSection.css';
+import { useUploadPhoto } from '../mqtt/hooks/useUploadPhoto';
+import '../styles/UploadPhotoSection.css';
 
-export default function PhotoUploadSection() {
+export default function UploadPhotoSection() {
   const [selectedFile, setSelectedFile] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
   const [uploadError, setUploadError] = useState(false);
-  const { uploadPhoto, isConnected } = usePhotoUpload();
+  const { uploadPhoto, isConnected } = useUploadPhoto();
 
   const handleFileChange = (event) => {
     if (event.target.files && event.target.files[0]) {
