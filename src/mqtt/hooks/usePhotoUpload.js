@@ -1,8 +1,9 @@
-import { useCallback } from 'react';
+import { useCallback, useRef } from 'react';
 import { useMqttContext } from '../MqttContext';
 
 export function usePhotoUpload() {
   const { client, isConnected } = useMqttContext();
+  const seqRef = useRef(0);
 
   const uploadPhoto = useCallback((file) => {
     return new Promise((resolve, reject) => {
@@ -22,21 +23,60 @@ export function usePhotoUpload() {
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        const arrayBuffer = e.target.result;
-        const imageBuffer = new Uint8Array(arrayBuffer);
+        const dataUrl = e.target.result;
+        const img = new Image();
 
-        client.publish("topst/rpi/photo", imageBuffer, (err) => {
-          if (err) {
-            console.error("[MqttPhotoUpload] Failed to publish photo:", err);
-            reject(err);
-          } else {
-            console.log("Photo published successfully");
-            resolve();
+        img.onload = () => {
+          const width = img.width;
+          const height = img.height;
+
+          // Extract format and base64 data
+          const matches = dataUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+
+          if (!matches) {
+            reject(new Error("Invalid image format"));
+            return;
           }
-        });
+
+          const format = matches[1];
+          const base64Data = matches[2];
+
+          seqRef.current += 1;
+
+          const message = {
+            device: "raspberry-pi-4",
+            ts: Date.now(),
+            seq: seqRef.current,
+            payload: {
+              format: format,
+              width: width,
+              height: height,
+              data: base64Data
+            }
+          };
+
+          const jsonString = JSON.stringify(message);
+
+          client.publish("topst/rpi/face", jsonString, (err) => {
+            if (err) {
+              console.error("[MqttPhotoUpload] Failed to publish photo:", err);
+              reject(err);
+            } else {
+              console.log("Photo published successfully");
+              resolve();
+            }
+          });
+        };
+
+        img.onerror = (err) => {
+          console.error("[MqttPhotoUpload] Failed to load image for dimensions:", err);
+          reject(err);
+        };
+
+        img.src = dataUrl;
       };
       reader.onerror = (error) => reject(error);
-      reader.readAsArrayBuffer(file);
+      reader.readAsDataURL(file);
     });
   }, [client, isConnected]);
 
