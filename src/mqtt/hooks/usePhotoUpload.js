@@ -8,97 +8,78 @@ export function usePhotoUpload() {
   const { client, isConnected } = useMqttContext();
   const seqRef = useRef(0);
 
-  const uploadPhoto = useCallback((file) => {
-    return new Promise((resolve, reject) => {
-      if (!client || !isConnected) {
-        const err = new Error("[MqttPhotoUpload] MQTT client not connected");
-        console.error(err);
-        reject(err);
-        return;
-      }
+  const uploadPhoto = useCallback(async (file) => {
+    if (!client || !isConnected) {
+      const err = new Error("[MqttPhotoUpload] MQTT client not connected");
+      console.error(err);
+      throw err;
+    }
 
-      if (!file) {
-        const err = new Error("[MqttPhotoUpload] No file selected");
-        console.error(err);
-        reject(err);
-        return;
-      }
+    if (!file) {
+      const err = new Error("[MqttPhotoUpload] No file selected");
+      console.error(err);
+      throw err;
+    }
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const dataUrl = e.target.result;
-        const img = new Image();
+    // load img and get original dimensions
+    const img = await new Promise((resolve, reject) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
 
-        img.onload = () => {
-          let width = img.width;
-          let height = img.height;
-          let currentDataUrl = dataUrl;
-
-          // Resize if larger than 640x480
-          if (width > MAX_WIDTH || height > MAX_HEIGHT) {
-            const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
-            width = Math.round(width * ratio);
-            height = Math.round(height * ratio);
-
-            const canvas = document.createElement('canvas');
-            canvas.width = width;
-            canvas.height = height;
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(img, 0, 0, width, height);
-
-            // Attempt to preserve original format
-            const mimeType = currentDataUrl.match(/^data:(image\/[a-zA-Z0-9+]+);base64,/)?.[1] || 'image/jpeg';
-            currentDataUrl = canvas.toDataURL(mimeType);
-          }
-
-          // Extract format and base64 data
-          const matches = currentDataUrl.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
-
-          if (!matches) {
-            reject(new Error("Invalid image format"));
-            return;
-          }
-
-          const format = matches[1];
-          const base64Data = matches[2];
-
-          seqRef.current += 1;
-
-          const message = {
-            device: "raspberry-pi-4",
-            ts: Date.now(),
-            seq: seqRef.current,
-            payload: {
-              format: format,
-              width: width,
-              height: height,
-              data: base64Data
-            }
-          };
-
-          const jsonString = JSON.stringify(message);
-
-          client.publish("topst/rpi/face", jsonString, (err) => {
-            if (err) {
-              console.error("[MqttPhotoUpload] Failed to publish photo:", err);
-              reject(err);
-            } else {
-              console.log("Photo published successfully");
-              resolve();
-            }
-          });
-        };
-
-        img.onerror = (err) => {
-          console.error("[MqttPhotoUpload] Failed to load image for dimensions:", err);
-          reject(err);
-        };
-
-        img.src = dataUrl;
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        resolve(img);
       };
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
+
+      img.onerror = (err) => {
+        URL.revokeObjectURL(url);
+        reject(err);
+      };
+
+      img.src = url;
     });
+
+    let width = img.width;
+    let height = img.height;
+
+    // Resize if larger than 640x480
+    if (width > MAX_WIDTH || height > MAX_HEIGHT) {
+      const ratio = Math.min(MAX_WIDTH / width, MAX_HEIGHT / height);
+      width = Math.round(width * ratio);
+      height = Math.round(height * ratio);
+    }
+
+    // draw to canvas
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, width, height);
+
+    // get format and base64 data
+    const mimeType = file.type;
+    const dataUrl = canvas.toDataURL(mimeType);
+
+    const format = mimeType.split('/')[1];
+    const base64Data = dataUrl.split(',')[1];
+
+    // send message
+    seqRef.current += 1;
+
+    const message = {
+      device: "raspberry-pi-4",
+      ts: Date.now(),
+      seq: seqRef.current,
+      payload: {
+        format: format,
+        width: width,
+        height: height,
+        data: base64Data
+      }
+    };
+    const jsonString = JSON.stringify(message);
+
+    await client.publishAsync("topst/rpi/face", jsonString);
   }, [client, isConnected]);
 
   return { uploadPhoto, isConnected };
