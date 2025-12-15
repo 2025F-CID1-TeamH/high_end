@@ -6,6 +6,7 @@ import StatsSection from './components/StatsSection';
 import TracksSection from './components/TracksSection';
 import EventsSection from './components/EventsSection';
 import UploadPhotoSection from './components/UploadPhotoSection';
+import SessionSection from './components/SessionSection';
 
 function App() {
     return (
@@ -17,6 +18,7 @@ function App() {
 
             <div className="container">
                 <UploadPhotoSection />
+                <SessionSection />
                 <StatsSection />
                 <TracksSection />
                 <div className="events-camera-layout">

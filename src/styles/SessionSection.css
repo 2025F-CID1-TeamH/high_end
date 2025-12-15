@@ -1,0 +1,118 @@
+.session-section {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.session-header h2 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 1.5rem;
+}
+
+.session-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.timer-display {
+    font-family: 'Courier New', monospace;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4a5568;
+    background: #edf2f7;
+    padding: 5px 15px;
+    border-radius: 8px;
+}
+
+.btn-start, .btn-stop {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.btn-start {
+    background-color: #48bb78;
+    color: white;
+}
+
+.btn-start:hover {
+    background-color: #38a169;
+}
+
+.btn-stop {
+    background-color: #f56565;
+    color: white;
+}
+
+.btn-stop:hover {
+    background-color: #e53e3e;
+}
+
+.session-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.session-card {
+    background: #f7fafc;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+.session-card h3 {
+    margin: 0 0 15px 0;
+    color: #718096;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.session-card.total .value {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #5a67d8;
+    text-align: center;
+}
+
+.sub-stats {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.sub-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.sub-stat .label {
+    font-size: 0.8rem;
+    color: #a0aec0;
+}
+
+.sub-stat .val {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2d3748;
+}

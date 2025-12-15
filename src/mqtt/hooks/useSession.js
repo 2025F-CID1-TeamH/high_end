@@ -8,14 +8,14 @@ export function useSession() {
   const [endTime, setEndTime] = useState(0);
   const prvSessionRef = useRef(session);
 
-  const { curTotal, curEnter, curExit, curHigh, curMedium, curLow } = session;
+  const { total, enter, exit, high, medium, low } = session;
   const curSession = {
-    total: curTotal - prvSessionRef.current.total,
-    enter: curEnter - prvSessionRef.current.enter,
-    exit: curExit - prvSessionRef.current.exit,
-    high: curHigh - prvSessionRef.current.high,
-    medium: curMedium - prvSessionRef.current.medium,
-    low: curLow - prvSessionRef.current.low
+    total: total - prvSessionRef.current.total,
+    enter: enter - prvSessionRef.current.enter,
+    exit: exit - prvSessionRef.current.exit,
+    high: high - prvSessionRef.current.high,
+    medium: medium - prvSessionRef.current.medium,
+    low: low - prvSessionRef.current.low
   }
 
   const startSession = () => {
@@ -35,8 +35,6 @@ export function useSession() {
     endTime,
     curSession,
     startSession,
-    stopSession,
-    elapsedTime,
-    count,
+    stopSession
   };
 }
