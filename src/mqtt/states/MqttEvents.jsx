@@ -28,12 +28,13 @@ export function eventsReducer(state, msg) {
       "track_id": msg.json.payload.track_id,
       "timestamp": msg.json.ts,
       "seq": msg.json.seq,
-      "priority": msg.json.payload.priority
+      "priority": msg.json.payload.priority,
     }
 
     const eventType = msg.json.payload.type;
     if (eventType === "enter") {
       event.image = msg.json.payload.image;
+      event.face_id = msg.json.payload.face_id;
     }
 
     const newCount = Math.min(state.count + 1, MAX_EVENTS);
