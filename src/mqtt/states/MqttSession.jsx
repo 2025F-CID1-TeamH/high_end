@@ -5,7 +5,9 @@ export const initialSession = {
   "exit": 0,
   "high": 0,
   "medium": 0,
-  "low": 0
+  "low": 0,
+  "latencySum": 0,
+  "lastLatency": 0
 };
 
 export function sessionReducer(state, msg) {
@@ -21,11 +23,14 @@ export function sessionReducer(state, msg) {
     let high = state.high;
     let medium = state.medium;
     let low = state.low;
+    let latencySum = state.latencySum;
 
     total += 1;
 
     const eventType = msg.json.payload.type;
     const confidence = msg.json.payload.priority;
+    const lastLatency = Date.now() - msg.json.ts;
+    latencySum += lastLatency;
 
     switch (eventType) {
       case "enter":
@@ -58,7 +63,9 @@ export function sessionReducer(state, msg) {
       exit,
       high,
       medium,
-      low
+      low,
+      latencySum,
+      lastLatency
     }
   }
   else return state;
