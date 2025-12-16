@@ -1,13 +1,20 @@
 
 export const initialSession = {
   "total": 0,
-  "enter": 0,
-  "exit": 0,
-  "high": 0,
-  "medium": 0,
-  "low": 0,
+  "type": {
+    "enter": 0,
+    "exit": 0,
+    "high": 0,
+    "medium": 0,
+    "low": 0
+  },
   "latencySum": 0,
-  "lastLatency": 0
+  "lastLatency": 0,
+  "baseline": {
+    "total": 0,
+    "latencySum": 0,
+    "lastLatency": 0
+  }
 };
 
 export function sessionReducer(state, msg) {
@@ -18,11 +25,11 @@ export function sessionReducer(state, msg) {
     }
 
     let total = state.total;
-    let enter = state.enter;
-    let exit = state.exit;
-    let high = state.high;
-    let medium = state.medium;
-    let low = state.low;
+    let enter = state.type.enter;
+    let exit = state.type.exit;
+    let high = state.type.high;
+    let medium = state.type.medium;
+    let low = state.type.low;
     let latencySum = state.latencySum;
 
     total += 1;
@@ -58,14 +65,39 @@ export function sessionReducer(state, msg) {
     }
 
     return {
+      ...state,
       total,
-      enter,
-      exit,
-      high,
-      medium,
-      low,
+      type: {
+        enter,
+        exit,
+        high,
+        medium,
+        low
+      },
       latencySum,
       lastLatency
+    }
+  }
+  else if (msg.topic === "topst/topst/motion") {
+    if (!msg.isJson) {
+      console.error("[MqttSession] Received non-JSON message on topic 'topst/topst/motion'");
+      return state;
+    }
+
+    let total = state.baseline.total;
+    let latencySum = state.baseline.latencySum;
+
+    total += 1;
+    const lastLatency = Date.now() - msg.json.ts;
+    latencySum += lastLatency;
+
+    return {
+      ...state,
+      baseline: {
+        total,
+        latencySum,
+        lastLatency
+      }
     }
   }
   else return state;
