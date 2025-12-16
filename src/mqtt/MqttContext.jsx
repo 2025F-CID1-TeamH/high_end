@@ -9,7 +9,7 @@ import mqtt from "mqtt";
 
 const MqttContext = createContext(null);
 
-const MQTT_SUB_TOPIC = "topst/topst/#"
+const MQTT_SUB_TOPIC = "#"
 // const MAX_MESSAGES = 1000;
 
 export function MqttProvider({ url, options, children }) {
@@ -34,6 +34,7 @@ export function MqttProvider({ url, options, children }) {
     const onError = (err) => console.error("[MQTT] error:", err);
 
     const onMessage = (topic, payload) => {
+      console.log("[MQTT] Received:", topic);
       let json = {};
       let isJson = true;
 

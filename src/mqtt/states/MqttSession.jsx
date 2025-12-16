@@ -78,9 +78,9 @@ export function sessionReducer(state, msg) {
       lastLatency
     }
   }
-  else if (msg.topic === "topst/topst/motion") {
+  else if (msg.topic === "raspberry/topst/motion") {
     if (!msg.isJson) {
-      console.error("[MqttSession] Received non-JSON message on topic 'topst/topst/motion'");
+      console.error("[MqttSession] Received non-JSON message on topic 'raspberry/topst/motion'");
       return state;
     }
 
