@@ -7,13 +7,14 @@ export function useSession() {
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const prvSessionRef = useRef(session);
+  const endSessionRef = useRef(session);
   const [minLatency, setMinLatency] = useState(Infinity);
   const [maxLatency, setMaxLatency] = useState(-Infinity);
   const [minBaselineLatency, setMinBaselineLatency] = useState(Infinity);
   const [maxBaselineLatency, setMaxBaselineLatency] = useState(-Infinity);
 
   useEffect(() => {
-    if (isRunning) {
+    if (isRunning && session.total > prvSessionRef.current.total) {
       const latency = session.lastLatency;
       if (latency !== undefined) {
         setMinLatency(prev => Math.min(prev, latency));
@@ -26,9 +27,10 @@ export function useSession() {
         setMaxBaselineLatency(prev => Math.max(prev, baselineLatency));
       }
     }
-  }, [session.lastLatency, session.baseline.lastLatency, isRunning]);
+  }, [session.lastLatency, session.baseline.lastLatency, isRunning, session.total]);
 
-  const { total, type, latencySum, baseline } = session;
+  const targetSession = isRunning ? session : endSessionRef.current;
+  const { total, type, latencySum, baseline } = targetSession;
 
   const deltaTotal = total - prvSessionRef.current.total;
   const deltaLatencySum = latencySum - prvSessionRef.current.latencySum;
@@ -59,17 +61,18 @@ export function useSession() {
   }
 
   const startSession = () => {
+    prvSessionRef.current = { ...session };
     setIsRunning(true);
     setStartTime(Date.now());
     setEndTime(Date.now());
 
-    prvSessionRef.current = { ...session };
     setMinLatency(Infinity);
     setMaxLatency(-Infinity);
     setMinBaselineLatency(Infinity);
     setMaxBaselineLatency(-Infinity);
   }
   const stopSession = () => {
+    endSessionRef.current = { ...session };
     setIsRunning(false);
     setEndTime(Date.now());
   }
