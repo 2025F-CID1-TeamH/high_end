@@ -203,3 +203,83 @@
     gap: 5px;
   }
 }
+
+/* 필터 스타일 */
+.priority-filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.filter-label {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: #edf2f7;
+  color: #718096;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  border: 2px solid transparent;
+}
+
+.filter-label input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+.filter-label:hover {
+  background: #e2e8f0;
+  transform: translateY(-1px);
+}
+
+.filter-label:active {
+  transform: translateY(0);
+}
+
+/* Active States */
+.filter-label.high.active {
+  background: #fff5f5;
+  color: #e53e3e;
+  border-color: #e53e3e;
+  box-shadow: 0 2px 5px rgba(229, 62, 62, 0.2);
+}
+
+.filter-label.medium.active {
+  background: #fffaf0;
+  color: #dd6b20;
+  border-color: #dd6b20;
+  box-shadow: 0 2px 5px rgba(221, 107, 32, 0.2);
+}
+
+.filter-label.low.active {
+  background: #f0fff4;
+  color: #38a169;
+  border-color: #38a169;
+  box-shadow: 0 2px 5px rgba(56, 161, 105, 0.2);
+}
+
+/* 체크 표시 아이콘 효과 (가상 요소 사용) */
+.filter-label::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-right: 0;
+  border-radius: 50%;
+  background: currentColor;
+  transition: all 0.2s ease;
+}
+
+.filter-label.active::before {
+  width: 6px;
+  height: 6px;
+  margin-right: 8px;
+}
