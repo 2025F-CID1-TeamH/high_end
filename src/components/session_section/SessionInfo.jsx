@@ -58,28 +58,6 @@ const SessionInfo = ({ session }) => {
           </div>
         </div>
       </div>
-      <div className="session-card total">
-        <h3>Baseline Total</h3>
-        <div className="value">{session.baseline_total}</div>
-      </div>
-
-      <div className="session-card group">
-        <h3>Baseline Latency (ms)</h3>
-        <div className="sub-stats">
-          <div className="sub-stat">
-            <span className="label">Min</span>
-            <span className="val">{session.baseline_latency.min.toFixed(0)}</span>
-          </div>
-          <div className="sub-stat">
-            <span className="label">Max</span>
-            <span className="val">{session.baseline_latency.max.toFixed(0)}</span>
-          </div>
-          <div className="sub-stat">
-            <span className="label">Avg</span>
-            <span className="val">{session.baseline_latency.avg.toFixed(1)}</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
