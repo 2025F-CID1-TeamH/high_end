@@ -7,23 +7,23 @@ export function useSession() {
   const [startTime, setStartTime] = useState(0);
   const [endTime, setEndTime] = useState(0);
   const prvSessionRef = useRef(session);
-  const minLatencyRef = useRef(Infinity);
-  const maxLatencyRef = useRef(-Infinity);
-  const minBaselineLatencyRef = useRef(Infinity);
-  const maxBaselineLatencyRef = useRef(-Infinity);
+  const [minLatency, setMinLatency] = useState(Infinity);
+  const [maxLatency, setMaxLatency] = useState(-Infinity);
+  const [minBaselineLatency, setMinBaselineLatency] = useState(Infinity);
+  const [maxBaselineLatency, setMaxBaselineLatency] = useState(-Infinity);
 
   useEffect(() => {
     if (isRunning) {
       const latency = session.lastLatency;
       if (latency !== undefined) {
-        if (latency < minLatencyRef.current) minLatencyRef.current = latency;
-        if (latency > maxLatencyRef.current) maxLatencyRef.current = latency;
+        setMinLatency(prev => Math.min(prev, latency));
+        setMaxLatency(prev => Math.max(prev, latency));
       }
 
       const baselineLatency = session.baseline.lastLatency;
       if (baselineLatency !== undefined) {
-        if (baselineLatency < minBaselineLatencyRef.current) minBaselineLatencyRef.current = baselineLatency;
-        if (baselineLatency > maxBaselineLatencyRef.current) maxBaselineLatencyRef.current = baselineLatency;
+        setMinBaselineLatency(prev => Math.min(prev, baselineLatency));
+        setMaxBaselineLatency(prev => Math.max(prev, baselineLatency));
       }
     }
   }, [session.lastLatency, session.baseline.lastLatency, isRunning]);
@@ -46,14 +46,14 @@ export function useSession() {
     medium: type.medium - prvSessionRef.current.type.medium,
     low: type.low - prvSessionRef.current.type.low,
     latency: {
-      min: minLatencyRef.current === Infinity ? 0 : minLatencyRef.current,
-      max: maxLatencyRef.current === -Infinity ? 0 : maxLatencyRef.current,
+      min: minLatency === Infinity ? 0 : minLatency,
+      max: maxLatency === -Infinity ? 0 : maxLatency,
       avg: avgLatency
     },
     baseline_total: baselineTotal,
     baseline_latency: {
-      min: minBaselineLatencyRef.current === Infinity ? 0 : minBaselineLatencyRef.current,
-      max: maxBaselineLatencyRef.current === -Infinity ? 0 : maxBaselineLatencyRef.current,
+      min: minBaselineLatency === Infinity ? 0 : minBaselineLatency,
+      max: maxBaselineLatency === -Infinity ? 0 : maxBaselineLatency,
       avg: avgBaselineLatency
     }
   }
@@ -64,11 +64,10 @@ export function useSession() {
     setEndTime(Date.now());
 
     prvSessionRef.current = { ...session };
-    minLatencyRef.current = Infinity;
-    maxLatencyRef.current = -Infinity;
-
-    minBaselineLatencyRef.current = Infinity;
-    maxBaselineLatencyRef.current = -Infinity;
+    setMinLatency(Infinity);
+    setMaxLatency(-Infinity);
+    setMinBaselineLatency(Infinity);
+    setMaxBaselineLatency(-Infinity);
   }
   const stopSession = () => {
     setIsRunning(false);

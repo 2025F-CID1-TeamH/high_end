@@ -39,6 +39,8 @@ export function sessionReducer(state, msg) {
     const lastLatency = Date.now() - msg.json.ts;
     latencySum += lastLatency;
 
+    console.log("[MqttSession] Event received: latency", lastLatency, "ms,", "type:", eventType, ", confidence:", confidence);
+
     switch (eventType) {
       case "enter":
         enter += 1;

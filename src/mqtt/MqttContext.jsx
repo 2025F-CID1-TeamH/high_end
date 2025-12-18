@@ -34,7 +34,7 @@ export function MqttProvider({ url, options, children }) {
     const onError = (err) => console.error("[MQTT] error:", err);
 
     const onMessage = (topic, payload) => {
-      console.log("[MQTT] Received:", topic);
+      // console.log("[MQTT] Received:", topic);
       let json = {};
       let isJson = true;
 
