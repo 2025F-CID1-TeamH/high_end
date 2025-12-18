@@ -46,6 +46,11 @@ export default function Event({ event }) {
             <div className="event-details">
                 <div className="event-info">
                     <span className="track-id-badge">ID: {event.track_id}</span>
+                    {event.priority === 'medium' &&
+                        event.face_id &&
+                        event.face_id !== 'unknown' && (
+                            <span className="face-id-badge">👤 {event.face_id}</span>
+                        )}
                     <span className="device-badge">{event.device}</span>
                     <span className="seq-badge">SEQ: {event.seq}</span>
                 </div>

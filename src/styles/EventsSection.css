@@ -141,6 +141,15 @@
   color: white;
 }
 
+.face-id-badge {
+  background: #f39c1220;
+  color: #f39c12;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .event-image {
   margin-top: 12px;
   position: relative;
