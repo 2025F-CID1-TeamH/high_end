@@ -19,11 +19,11 @@ function App() {
             <div className="container">
                 <UploadPhotoSection />
                 <StatsSection />
-                <TracksSection />
                 <div className="events-camera-layout">
                     <EventsSection />
                     <CameraSection />
                 </div>
+                <TracksSection />
                 <SessionSection />
             </div>
         </div>
